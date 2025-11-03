@@ -1,0 +1,24 @@
+{
+  "name": "comba-haxball",
+  "version": "1.0.0",
+  "description": "....",
+  "main": "create.js",
+  "scripts": {
+    "dev": "node create.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoyNeo12/comba-haxball.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/SoyNeo12/comba-haxball/issues"
+  },
+  "homepage": "https://github.com/SoyNeo12/comba-haxball#readme",
+  "dependencies": {
+    "node-haxball": "^2.3.0"
+  }
+}

@@ -8,3 +8,11 @@
 
 ### 🧠 Notes
 * Implementation inspired by classic HaxBall curve mechanics, enhancing gameplay dynamics and realism.
+
+### INITIALIZATION
+```
+git clone https://github.com/SoyNeo12/comba-haxball.git
+cd comba-haxball
+npm install
+npm run dev
+```
