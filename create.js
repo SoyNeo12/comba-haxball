@@ -19,17 +19,26 @@ Room.create({
     showInRoomList: true,
     noPlayer: true,
     maxPlayerCount: 30,
-    geo: null
+    geo: null,
+    token: "" // https://www.haxball.com/headlesstoken
 }, {
-    plugins: [ // if you use method 1
+    plugins: [
         new comba(API)
     ],
     onOpen: (room) => {
-        room.onAfterRoomLink = function (link) {
-            console.log(link);
-        };
+        room.onAfterRoomLink = (link) => console.log(link);
 
-        toggleComba(room) // if you use method 2
+        function updateAdmins() {
+            const players = room.players;
+            const admins = players.filter(p => p.isAdmin);
+            if (admins.length > 0) return;
+
+            room.setPlayerAdmin(players[0].id, true);
+        }
+
+        room.onPlayerJoin = function (player) {
+            updateAdmins();
+        };
     },
     onClose: (msg) => {
         if (msg.code === Errors.ErrorCodes.MissingRecaptchaCallbackError) {

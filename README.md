@@ -16,3 +16,5 @@ cd comba-haxball
 npm install
 npm run dev
 ```
+
+Wait to receive the link, add a map and you're all set, give it a try!

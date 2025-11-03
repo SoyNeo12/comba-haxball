@@ -25,7 +25,7 @@ module.exports = function (API) {
     this.defineVariable({
         name: "speed",
         type: VariableType.Number,
-        value: 2,
+        value: 1.7,
         range: {
             min: 0,
             max: 10,
@@ -112,20 +112,29 @@ module.exports = function (API) {
         const playerProps = that.room.getPlayerDisc(playerId);
         if (!playerProps || !ball) return;
 
-        const ygravity = playerProps.pos.y > ball.pos.y ? -that.gravityStrength : that.gravityStrength;
+        const ygravity = ball.pos.y > playerProps.pos.y ?
+            -that.gravityStrength : that.gravityStrength;
+
         const newProperties = {
             xspeed: ball.speed.x * that.speed,
             yspeed: ball.speed.y * that.speed,
-            color: originalBallColor,
             ygravity
         };
 
         Utils.runAfterGameTick(() => {
             that.room.setDiscProperties(0, newProperties);
         });
+
+        setTimeout(() => {
+            Utils.runAfterGameTick(() =>
+                that.room.setDiscProperties(0, { ygravity: 0 })
+            );
+        }, 1300);
+
+        resetBall();
     }
 
-    function resetGravity() {
+    function resetBall() {
         combaActive = false;
         if (timeout) {
             clearTimeout(timeout);
@@ -135,7 +144,6 @@ module.exports = function (API) {
         Utils.runAfterGameTick(() =>
             that.room.setDiscProperties(0, {
                 color: originalBallColor ?? 0xFFFFFF,
-                ygravity: 0
             })
         );
     }
@@ -145,7 +153,7 @@ module.exports = function (API) {
         if (closest) {
             if (!heldBy) {
                 heldBy = closest.id;
-                resetGravity();
+                resetBall();
 
                 timeout = setTimeout(() => {
                     Utils.runAfterGameTick(() =>
@@ -156,13 +164,13 @@ module.exports = function (API) {
                 }, that.timeToLoad);
             }
         } else if (heldBy) {
-            resetGravity();
+            resetBall();
             heldBy = null;
         }
     }
 
     this.onPlayerBallKick = function (playerId) {
-        if (combaActive && heldBy === playerId) {
+        if (combaActive) {
             setDiscProps(playerId);
         }
     };
@@ -180,7 +188,7 @@ module.exports = function (API) {
         if (!ball) return;
 
         if (discId === 0 && ball.gravity.y !== 0) {
-            resetGravity();
+            resetBall();
         }
     };
 
@@ -189,7 +197,7 @@ module.exports = function (API) {
         if (!ball) return;
 
         if (discId === 0 && ball.gravity.y !== 0) {
-            resetGravity();
+            resetBall();
         }
     };
 
@@ -198,7 +206,7 @@ module.exports = function (API) {
         if (!ball) return;
 
         if (discId === 0 && ball.gravity.y !== 0) {
-            resetGravity();
+            resetBall();
         }
     };
 }
