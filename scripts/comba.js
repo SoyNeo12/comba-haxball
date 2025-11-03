@@ -129,7 +129,7 @@ module.exports = function (API) {
             Utils.runAfterGameTick(() =>
                 that.room.setDiscProperties(0, { ygravity: 0 })
             );
-        }, 1300);
+        }, 1400);
 
         resetBall();
     }
