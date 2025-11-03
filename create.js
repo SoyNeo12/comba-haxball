@@ -1,4 +1,4 @@
-const comba = require("./scripts/method1/comba");
+const comba = require("./scripts/comba");
 
 
 const API = require("node-haxball")();
