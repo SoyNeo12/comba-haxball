@@ -1,5 +1,5 @@
-## 🌀 Curve Shot (Spin Effect)
-* Adds a realistic spin effect to the ball when kicked, using the `node-haxball` library.
+## 🌀 Curve Shot
+* Adds a basic curve-shot to the ball when kicked, using the `node-haxball` library.
 * The curve direction depends on the player's and ball's Y position when shooting — higher or lower positions create different spin trajectories.
 
 ### ⚙️ Features
