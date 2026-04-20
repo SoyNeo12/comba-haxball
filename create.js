@@ -22,9 +22,7 @@ Room.create({
     geo: null,
     token: "" // https://www.haxball.com/headlesstoken
 }, {
-    plugins: [
-        new comba(API)
-    ],
+    plugins: [new comba(API)], // https://github.com/wxyz-abcd/node-haxball/tree/main/examples/plugins
     onOpen: (room) => {
         room.onAfterRoomLink = (link) => console.log(link);
 
