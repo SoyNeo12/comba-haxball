@@ -39,6 +39,10 @@ Room.create({
         room.onPlayerJoin = function (player) {
             updateAdmins();
         };
+
+        room.onPlayerLeave = function(player) {
+            updateAdmins();
+        };
     },
     onClose: (msg) => {
         if (msg.code === Errors.ErrorCodes.MissingRecaptchaCallbackError) {
