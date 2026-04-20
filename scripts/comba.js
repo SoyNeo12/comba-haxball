@@ -86,52 +86,23 @@ module.exports = function (API) {
     }
 
     function getClosestPlayer() {
-        const players = that.room.players.filter(p => p.team.id !== 0);
-        if (players.length === 0) return;
+        if (that.room.players.length === 0) return;
 
         const ball = that.room.getBall();
         if (!ball) return;
 
         let closestPlayer = null;
-        for (const player of players) {
-            const playerProps = player.disc;
-            if (!playerProps) continue;
+        for (const player of that.room.players) {
+            if (player.team.id === 0 || !player.disc) continue;
 
-            const distance = pointDistance(ball, playerProps);
-            const triggerDistance = playerProps.radius + ball.radius + 0.1;
+            const distance = pointDistance(ball, player.disc);
+            const triggerDistance = player.disc.radius + ball.radius + 0.1;
             if (distance <= triggerDistance) {
                 closestPlayer = player;
             }
         }
 
         return closestPlayer;
-    }
-
-    function setDiscProps(playerId) {
-        const ball = that.room.getBall();
-        const playerProps = that.room.getPlayerDisc(playerId);
-        if (!playerProps || !ball) return;
-
-        const ygravity = ball.pos.y > playerProps.pos.y ?
-            -that.gravityStrength : that.gravityStrength;
-
-        const newProperties = {
-            xspeed: ball.speed.x * that.speed,
-            yspeed: ball.speed.y * that.speed,
-            ygravity
-        };
-
-        Utils.runAfterGameTick(() => {
-            that.room.setDiscProperties(0, newProperties);
-        });
-
-        setTimeout(() => {
-            Utils.runAfterGameTick(() =>
-                that.room.setDiscProperties(0, { ygravity: 0 })
-            );
-        }, 1400);
-
-        resetBall();
     }
 
     function resetBall() {
@@ -150,29 +121,52 @@ module.exports = function (API) {
 
     function applyGravity() {
         const closest = getClosestPlayer();
-        if (closest) {
-            if (!heldBy) {
-                heldBy = closest.id;
-                resetBall();
-
-                timeout = setTimeout(() => {
-                    Utils.runAfterGameTick(() =>
-                        that.room.setDiscProperties(0, { color: that.combaColor })
-                    );
-
-                    combaActive = true;
-                }, that.timeToLoad);
-            }
-        } else if (heldBy) {
+        if (!closest) {
             resetBall();
             heldBy = null;
+            return;
         }
+
+        if (!heldBy) {
+            heldBy = closest.id;
+            resetBall();
+            return;
+        }
+        
+        timeout = setTimeout(() => {
+            Utils.runAfterGameTick(() =>
+                that.room.setDiscProperties(0, { color: that.combaColor })
+            );
+
+            combaActive = true;
+        }, that.timeToLoad);
     }
 
     this.onPlayerBallKick = function (playerId) {
-        if (combaActive) {
-            setDiscProps(playerId);
-        }
+        if (!combaActive) return;
+        
+        const ball = that.room.getBall();
+        const playerProps = that.room.getPlayerDisc(playerId);
+        if (!playerProps || !ball) return;
+
+        const ygravity = ball.pos.y > playerProps.pos.y ?
+            -that.gravityStrength : that.gravityStrength;
+
+        Utils.runAfterGameTick(() => {
+            that.room.setDiscProperties(0, {
+                xspeed: ball.speed.x * that.speed,
+                yspeed: ball.speed.y * that.speed,
+                ygravity
+            });
+        });
+
+        setTimeout(() => {
+            Utils.runAfterGameTick(() =>
+                that.room.setDiscProperties(0, { ygravity: 0 })
+            );
+        }, 1400);
+
+        resetBall();
     };
 
     this.onGameTick = function () {
@@ -183,30 +177,10 @@ module.exports = function (API) {
         }
     };
 
-    this.onCollisionDiscVsDisc = function (discId) {
+    this.onCollisionDiscVsDisc = this.onCollisionDiscVsPlane = this.onCollisionDiscVsSegment = function (discId) {
         const ball = that.room.getBall();
-        if (!ball) return;
+        if (!ball || discId !== 0 && ball.gravity.y === 0) return;
 
-        if (discId === 0 && ball.gravity.y !== 0) {
-            resetBall();
-        }
-    };
-
-    this.onCollisionDiscVsPlane = function (discId) {
-        const ball = that.room.getBall();
-        if (!ball) return;
-
-        if (discId === 0 && ball.gravity.y !== 0) {
-            resetBall();
-        }
-    };
-
-    this.onCollisionDiscVsSegment = function (discId) {
-        const ball = that.room.getBall();
-        if (!ball) return;
-
-        if (discId === 0 && ball.gravity.y !== 0) {
-            resetBall();
-        }
+        resetBall();
     };
 }
