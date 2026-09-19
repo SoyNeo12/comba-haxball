@@ -6,9 +6,6 @@
 * Basic spin effect based on player Y position.
 * Adjustable and compatible with `node-haxball` physics.
 
-### Notes
-* Implementation inspired by classic HaxBall curve mechanics, enhancing gameplay dynamics and realism.
-
 ### INITIALIZATION
 ```
 git clone https://github.com/SoyNeo12/comba-haxball.git
@@ -17,4 +14,4 @@ npm install
 npm run dev
 ```
 
-Wait to receive the link, add a map and you're all set, give it a try!
+Wait to receive the link, add a map and you're all set.
