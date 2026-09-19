@@ -11,7 +11,7 @@
 git clone https://github.com/SoyNeo12/comba-haxball.git
 cd comba-haxball
 npm install
-npm run dev
+node .
 ```
 
 Wait to receive the link, add a map and you're all set.
